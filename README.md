@@ -1,2 +1,0 @@
-# territories
-Territories and Visits
