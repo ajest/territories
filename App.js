@@ -1,8 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import { Header, Card } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
+import MapView from 'react-native-maps';
 
 export default function App() {
   return (
@@ -19,10 +20,24 @@ export default function App() {
       />
       <View>
         <Card title="Mapa general">
-          <Text>Aquí estará el mapa general</Text>
+          <View style={styles.container}>
+            <MapView style={styles.mapStyle} />
+          </View>
         </Card>
       </View>
       <StatusBar style="auto" />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mapStyle: {
+    width: '100%',
+    height: Dimensions.get('window').height - 200,
+  },
+});
