@@ -1,10 +1,20 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 
 const Map = () => (
   <View style={styles.container}>
-    <MapView style={styles.mapStyle} />
+    <MapView
+      style={styles.mapStyle}
+      zoomEnabled={true}
+      showsUserLocation={true}
+    >
+      <Marker
+        coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
+        title={'title'}
+        description={'description'}
+      />
+    </MapView>
   </View>
 );
 
