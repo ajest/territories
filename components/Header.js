@@ -5,7 +5,6 @@ import { StyleSheet } from 'react-native';
 
 const Header = () => (
   <HeaderNativeElements
-    // leftComponent={{ icon: 'menu', color: '#fff' }}
     centerComponent={{ text: 'Territorios', style: styles.centerComponent }}
     ViewComponent={LinearGradient}
     linearGradientProps={{

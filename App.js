@@ -1,20 +1,16 @@
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { View } from 'react-native';
-import { Card } from 'react-native-elements';
-import Header from './components/Header';
-import Map from './components/Map';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './screens/HomeScreen';
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View>
-      <Header />
-      <View>
-        <Card title="Mapa general">
-          <Map />
-        </Card>
-      </View>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }

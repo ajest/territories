@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 const defaultRegion = {
@@ -41,6 +41,6 @@ const styles = StyleSheet.create({
   },
   mapStyle: {
     width: '100%',
-    height: Dimensions.get('window').height - 200,
+    height: '100%',
   },
 });
