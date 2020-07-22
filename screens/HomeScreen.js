@@ -1,47 +1,28 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Button } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Map from '../components/Map';
-import AsyncStorage from '@react-native-community/async-storage';
+// import useAsyncStorage from '@rnhooks/async-storage';
 
-const territories = ['Almagro', 'Balvanera', 'Belgrano'];
-const STORAGE_KEY = '@territories';
+// const territories = ['Almagro', 'Balvanera', 'Belgrane'];
+// const STORAGE_KEY = '@territories';
 
-const storeData = async (value) => {
-  try {
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(territories));
-  } catch (e) {
-    console.warn(e);
-  }
-};
-
-const readData = async () => {
-  try {
-    const res = await AsyncStorage.getItem(STORAGE_KEY);
-  } catch (e) {
-    console.warn(e);
-  }
-};
-
-function HomeScreen({ navigation }) {
-  // useEffect(() => {
-  //   storeData(territories);
-  // }, []);
-
-  useEffect(() => {
-    readData();
-  }, []);
+export default function HomeScreen({ navigation }) {
+  // const [storageItem, updateStorageItem, clearStorageItem] = useAsyncStorage(
+  //   STORAGE_KEY
+  // );
+  // updateStorageItem(JSON.stringify(territories));
 
   return (
     <View>
       <Button
         title="Ir a territorios"
-        onPress={() => navigation.navigate('Neighborhoods')}
+        onPress={() => {
+          navigation.navigate('Neighborhoods');
+        }}
       />
       <Map />
       <StatusBar style="auto" />
     </View>
   );
 }
-
-export default HomeScreen;
