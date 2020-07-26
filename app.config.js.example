@@ -1,0 +1,13 @@
+import firebase from './config/firebase';
+
+export default ({ config }) => {
+  return {
+    name: config.name,
+    version: config.version,
+    extra: {
+      firebase: {
+        // Data firebase app here
+      },
+    },
+  };
+};
