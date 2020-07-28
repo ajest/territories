@@ -4,8 +4,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
 import NeighborhoodsScreen from './screens/NeighborhoodsScreen';
 import Constants from 'expo-constants';
+import * as firebase from 'firebase';
+import SignInScreen from './screens/SignInScreen';
 
-// console.log(Constants.manifest.extra.firebase);
+if (!firebase.apps.length) {
+  firebase.initializeApp(Constants.manifest.extra.firebaseConfig);
+}
 
 const Stack = createStackNavigator();
 
@@ -13,7 +17,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="SignIn"
         screenOptions={{
           headerStyle: {
             backgroundColor: '#f4511e',
@@ -25,6 +29,7 @@ export default function App() {
         }}
       >
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen title="Ingresar" name="SignIn" component={SignInScreen} />
         <Stack.Screen name="Neighborhoods" component={NeighborhoodsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
