@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useContext, createContext } from 'react';
 import { View, Button, StyleSheet, Text } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import AuthContext from '../contexts/auth-context';
 
 export default function SignInScreen({ navigation }) {
-  function handleLogin() {
-    console.log('Log');
-  }
+  const { signIn } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
@@ -31,7 +30,7 @@ export default function SignInScreen({ navigation }) {
         // value={state.password}
         value={''}
       />
-      <Button title="Login" onPress={handleLogin} />
+      <Button title="Login" onPress={() => signIn()} />
     </View>
   );
 }
