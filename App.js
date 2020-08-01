@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, createContext } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
@@ -24,18 +24,28 @@ export default function App() {
             ...prevState,
             userToken: action.token,
             isLoading: false,
+            loginErrors: null,
           };
         case 'SIGN_IN':
           return {
             ...prevState,
             isSignout: false,
             userToken: action.token,
+            loginErrors: null,
           };
         case 'SIGN_OUT':
           return {
             ...prevState,
             isSignout: true,
             userToken: null,
+            loginErrors: null,
+          };
+        case 'LOGIN_ERRORS':
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+            loginErrors: action.errors,
           };
       }
     },
@@ -43,6 +53,7 @@ export default function App() {
       isLoading: true,
       isSignout: false,
       userToken: null,
+      loginErrors: null,
     }
   );
 
@@ -69,19 +80,17 @@ export default function App() {
 
   const authContext = React.useMemo(
     () => ({
-      signIn: async () => {
+      signIn: async (credentials) => {
         await firebase
           .auth()
-          .signInWithEmailAndPassword('unemail@mail.com', 'awesomepassword')
+          .signInWithEmailAndPassword(credentials.email, credentials.password)
           .then((data) => {
-            console.log('Logged Successfully');
             dispatch({ type: 'SIGN_IN', token: data.stsTokenManager });
           })
           .catch(function (error) {
-            const errorCode = error.code;
             const errorMessage = error.message;
 
-            alert(errorCode, errorMessage);
+            dispatch({ type: 'LOGIN_ERRORS', errors: errorMessage });
           });
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),

@@ -1,36 +1,38 @@
-import React, { useContext, createContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Button, StyleSheet, Text } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import AuthContext from '../contexts/auth-context';
 
 export default function SignInScreen({ navigation }) {
-  const { signIn } = useContext(AuthContext);
+  const { signIn, getErrors } = useContext(AuthContext);
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
+
+  // ! Pasar errores a formulario
 
   return (
     <View style={styles.container}>
       <Text>Ingrese sus datos</Text>
-      {/* {state.errorMessage &&
-            <Text style={{ color: 'red' }}>
-              {state.errorMessage}
-            </Text>} */}
+      {/* {errors && <Text style={{ color: 'red' }}>{errors}</Text>} */}
       <TextInput
         style={styles.textInput}
         autoCapitalize="none"
         placeholder="Email"
-        // onChangeText={(email) => setState({ email })}
-        // value={state.email}
-        value={''}
+        onChangeText={(email) =>
+          setCredentials({ ...credentials, email: email })
+        }
+        value={credentials.email}
       />
       <TextInput
         secureTextEntry
         style={styles.textInput}
         autoCapitalize="none"
         placeholder="Password"
-        // onChangeText={(password) => setState({ password })}
-        // value={state.password}
-        value={''}
+        onChangeText={(password) =>
+          setCredentials({ ...credentials, password: password })
+        }
+        value={credentials.password}
       />
-      <Button title="Login" onPress={() => signIn()} />
+      <Button title="Login" onPress={() => signIn(credentials)} />
     </View>
   );
 }
