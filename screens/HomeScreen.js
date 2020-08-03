@@ -15,56 +15,6 @@ export default function HomeScreen({ navigation }) {
 
   // updateStorageItem(JSON.stringify(territories));
 
-  // async function logIn() {
-  //   try {
-  //     await firebase
-  //       .auth()
-  //       .signInWithEmailAndPassword(
-  //         'unemail@mail.com',
-  //         'awesomepassword'
-  //       )
-  //       .then((data) => {
-  //         console.log(data);
-  //         // Here is the token
-  //         // data.stsTokenManager
-  //       })
-  //       .catch(function (error) {
-  //         var errorCode = error.code;
-  //         var errorMessage = error.message;
-  //       });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
-  // async function logInWithToken() {
-  //   await firebase
-  //     .auth()
-  //     .signInWithCustomToken(token)
-  //     .catch(function (error) {
-  //       // Handle Errors here.
-  //       var errorCode = error.code;
-  //       var errorMessage = error.message;
-  //       // ...
-  //     });
-  // }
-
-  // function checkIsLogged() {
-  //   const user = firebase.auth().currentUser;
-
-  //   if (user) {
-  //     console.log('is logged');
-  //   } else {
-  //     console.log('isnt logged');
-  //   }
-  // }
-
-  // firebase.auth().signOut().then(function() {
-  //   // Sign-out successful.
-  // }).catch(function(error) {
-  //   // An error happened.
-  // });
-
   return (
     <View>
       <Button

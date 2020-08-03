@@ -3,16 +3,16 @@ import { View, Button, StyleSheet, Text } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import AuthContext from '../contexts/auth-context';
 
-export default function SignInScreen({ navigation }) {
-  const { signIn, getErrors } = useContext(AuthContext);
+export default function SignInScreen() {
+  const { signIn, errors } = useContext(AuthContext);
   const [credentials, setCredentials] = useState({ email: '', password: '' });
-
-  // ! Pasar errores a formulario
 
   return (
     <View style={styles.container}>
       <Text>Ingrese sus datos</Text>
-      {/* {errors && <Text style={{ color: 'red' }}>{errors}</Text>} */}
+
+      {errors && <Text style={{ color: 'red' }}>{errors}</Text>}
+
       <TextInput
         style={styles.textInput}
         autoCapitalize="none"

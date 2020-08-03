@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
@@ -8,12 +8,14 @@ import NeighborhoodsScreen from './screens/NeighborhoodsScreen';
 import Constants from 'expo-constants';
 import * as firebase from 'firebase';
 import AuthContext from './contexts/auth-context';
+import * as SecureStore from 'expo-secure-store';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(Constants.manifest.extra.firebaseConfig);
 }
 
 const Stack = createStackNavigator();
+const userTokenName = 'firebaseToken';
 
 export default function App() {
   const [state, dispatch] = useReducer(
@@ -24,28 +26,18 @@ export default function App() {
             ...prevState,
             userToken: action.token,
             isLoading: false,
-            loginErrors: null,
           };
         case 'SIGN_IN':
           return {
             ...prevState,
             isSignout: false,
             userToken: action.token,
-            loginErrors: null,
           };
         case 'SIGN_OUT':
           return {
             ...prevState,
             isSignout: true,
             userToken: null,
-            loginErrors: null,
-          };
-        case 'LOGIN_ERRORS':
-          return {
-            ...prevState,
-            isSignout: true,
-            userToken: null,
-            loginErrors: action.errors,
           };
       }
     },
@@ -53,50 +45,73 @@ export default function App() {
       isLoading: true,
       isSignout: false,
       userToken: null,
-      loginErrors: null,
     }
   );
 
+  const [loginFormErrors, setLoginFormErrors] = useState([]);
+
   useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
+    // Fetch the token from storage then navigate
     const bootstrapAsync = async () => {
-      let userToken;
+      // ! Falta resolver esta lógica que quedó obsoleta
 
-      try {
-        userToken = await AsyncStorage.getItem('userToken');
-      } catch (e) {
-        // Restoring token failed
-      }
-
-      // After restoring token, we may need to validate it in production apps
-
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+      dispatch({ type: 'RESTORE_TOKEN', token: 'token' });
     };
 
     bootstrapAsync();
   }, []);
 
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+      console.log('Está logueado');
+
+      user.getIdToken().then(function (token) {
+        dispatch({ type: 'SIGN_IN', token: token });
+      });
+    } else {
+      console.log('No está logueado');
+    }
+  });
+
   const authContext = React.useMemo(
     () => ({
-      signIn: async (credentials) => {
-        await firebase
+      signIn: (credentials) => {
+        firebase
           .auth()
           .signInWithEmailAndPassword(credentials.email, credentials.password)
-          .then((data) => {
-            dispatch({ type: 'SIGN_IN', token: data.stsTokenManager });
-          })
           .catch(function (error) {
-            const errorMessage = error.message;
-
-            dispatch({ type: 'LOGIN_ERRORS', errors: errorMessage });
+            setLoginFormErrors([error.message]);
           });
       },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
+      signOut: () => {
+        SecureStore.deleteItemAsync(userTokenName);
+
+        firebase
+          .auth()
+          .signOut()
+          .then(function () {
+            console.log('Sign-out successful.');
+          })
+          .catch(function (error) {
+            console.log('An error happened.');
+          });
+
+        dispatch({ type: 'SIGN_OUT' });
+      },
+      errors: loginFormErrors,
     }),
-    []
+    [loginFormErrors]
   );
+
+  function checkIsLogged() {
+    const user = firebase.auth().currentUser;
+
+    if (user) {
+      console.log('is logged');
+    } else {
+      console.log('isnt logged');
+    }
+  }
 
   return (
     <AuthContext.Provider value={authContext}>
