@@ -8,14 +8,12 @@ import NeighborhoodsScreen from './screens/NeighborhoodsScreen';
 import Constants from 'expo-constants';
 import * as firebase from 'firebase';
 import AuthContext from './contexts/auth-context';
-import * as SecureStore from 'expo-secure-store';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(Constants.manifest.extra.firebaseConfig);
 }
 
 const Stack = createStackNavigator();
-const userTokenName = 'firebaseToken';
 
 export default function App() {
   const [state, dispatch] = useReducer(
@@ -32,6 +30,7 @@ export default function App() {
             ...prevState,
             isSignout: false,
             userToken: action.token,
+            isLoading: false,
           };
         case 'SIGN_OUT':
           return {
@@ -51,27 +50,16 @@ export default function App() {
   const [loginFormErrors, setLoginFormErrors] = useState([]);
 
   useEffect(() => {
-    // Fetch the token from storage then navigate
-    const bootstrapAsync = async () => {
-      // ! Falta resolver esta lógica que quedó obsoleta
-
-      dispatch({ type: 'RESTORE_TOKEN', token: 'token' });
-    };
-
-    bootstrapAsync();
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        user.getIdToken().then(function (token) {
+          dispatch({ type: 'SIGN_IN', token: token });
+        });
+      } else {
+        dispatch({ type: 'RESTORE_TOKEN', token: null });
+      }
+    });
   }, []);
-
-  firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-      console.log('Está logueado');
-
-      user.getIdToken().then(function (token) {
-        dispatch({ type: 'SIGN_IN', token: token });
-      });
-    } else {
-      console.log('No está logueado');
-    }
-  });
 
   const authContext = React.useMemo(
     () => ({
@@ -84,34 +72,20 @@ export default function App() {
           });
       },
       signOut: () => {
-        SecureStore.deleteItemAsync(userTokenName);
-
         firebase
           .auth()
           .signOut()
           .then(function () {
-            console.log('Sign-out successful.');
+            dispatch({ type: 'SIGN_OUT' });
           })
           .catch(function (error) {
             console.log('An error happened.');
           });
-
-        dispatch({ type: 'SIGN_OUT' });
       },
       errors: loginFormErrors,
     }),
     [loginFormErrors]
   );
-
-  function checkIsLogged() {
-    const user = firebase.auth().currentUser;
-
-    if (user) {
-      console.log('is logged');
-    } else {
-      console.log('isnt logged');
-    }
-  }
 
   return (
     <AuthContext.Provider value={authContext}>
