@@ -1,8 +1,6 @@
 import React from 'react';
-import { View, Button } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { View } from 'react-native';
 import Map from '../components/Map';
-import { Header } from 'react-native-elements';
 import LayoutHeader from '../components/layout/LayoutHeader';
 // import useAsyncStorage from '@rnhooks/async-storage';
 // import * as firebase from 'firebase';
