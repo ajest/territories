@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 const defaultRegion = {
@@ -19,6 +19,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  mapDrawerOverlay: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    opacity: 0.0,
+    height: '100%',
+    width: 20,
+  },
 });
 
 export default function Map() {
@@ -37,6 +45,7 @@ export default function Map() {
           description={'Avenida Gaona 2120'}
         />
       </MapView>
+      <View style={styles.mapDrawerOverlay} />
     </View>
   );
 }

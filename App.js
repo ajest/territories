@@ -1,6 +1,6 @@
 import React, { useReducer, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from './screens/HomeScreen';
 import SignInScreen from './screens/SignInScreen';
 import SplashScreen from './screens/SplashScreen';
@@ -8,12 +8,13 @@ import NeighborhoodsScreen from './screens/NeighborhoodsScreen';
 import Constants from 'expo-constants';
 import * as firebase from 'firebase';
 import AuthContext from './contexts/auth-context';
+import DrawerContainer from './components/layout/DrawerContainer';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(Constants.manifest.extra.firebaseConfig);
 }
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
 export default function App() {
   const [state, dispatch] = useReducer(
@@ -90,35 +91,27 @@ export default function App() {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: '#f4511e',
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-          }}
+        <Drawer.Navigator
+          drawerContent={(props) => <DrawerContainer {...props} />}
         >
           {state.isLoading ? (
-            <Stack.Screen name="Splash" component={SplashScreen} />
+            <Drawer.Screen name="Splash" component={SplashScreen} />
           ) : state.userToken == null ? (
-            <Stack.Screen
+            <Drawer.Screen
               title="Ingresar"
               name="SignIn"
               component={SignInScreen}
             />
           ) : (
             <>
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen
+              <Drawer.Screen name="Home" component={HomeScreen} />
+              <Drawer.Screen
                 name="Neighborhoods"
                 component={NeighborhoodsScreen}
               />
             </>
           )}
-        </Stack.Navigator>
+        </Drawer.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
   );
