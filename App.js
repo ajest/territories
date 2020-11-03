@@ -9,6 +9,8 @@ import Constants from 'expo-constants';
 import * as firebase from 'firebase';
 import AuthContext from './contexts/auth-context';
 import DrawerContainer from './components/layout/DrawerContainer';
+import { Provider } from 'react-redux';
+import rootStore from './redux/stores/rootStore';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(Constants.manifest.extra.firebaseConfig);
@@ -80,7 +82,7 @@ export default function App() {
             dispatch({ type: 'SIGN_OUT' });
           })
           .catch(function (error) {
-            console.log('An error happened.');
+            console.error('An error happened.');
           });
       },
       errors: loginFormErrors,
@@ -89,30 +91,32 @@ export default function App() {
   );
 
   return (
-    <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
-        <Drawer.Navigator
-          drawerContent={(props) => <DrawerContainer {...props} />}
-        >
-          {state.isLoading ? (
-            <Drawer.Screen name="Splash" component={SplashScreen} />
-          ) : state.userToken == null ? (
-            <Drawer.Screen
-              title="Ingresar"
-              name="SignIn"
-              component={SignInScreen}
-            />
-          ) : (
-            <>
-              <Drawer.Screen name="Home" component={HomeScreen} />
+    <Provider store={rootStore}>
+      <AuthContext.Provider value={authContext}>
+        <NavigationContainer>
+          <Drawer.Navigator
+            drawerContent={(props) => <DrawerContainer {...props} />}
+          >
+            {state.isLoading ? (
+              <Drawer.Screen name="Splash" component={SplashScreen} />
+            ) : state.userToken == null ? (
               <Drawer.Screen
-                name="Neighborhoods"
-                component={NeighborhoodsScreen}
+                title="Ingresar"
+                name="SignIn"
+                component={SignInScreen}
               />
-            </>
-          )}
-        </Drawer.Navigator>
-      </NavigationContainer>
-    </AuthContext.Provider>
+            ) : (
+              <>
+                <Drawer.Screen name="Home" component={HomeScreen} />
+                <Drawer.Screen
+                  name="Neighborhoods"
+                  component={NeighborhoodsScreen}
+                />
+              </>
+            )}
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </AuthContext.Provider>
+    </Provider>
   );
 }
